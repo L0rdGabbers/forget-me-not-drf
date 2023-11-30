@@ -34,7 +34,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['8000-l0rdgabbers-forgetmenot-3gpo3eya3f3.ws-eu106.gitpod.io']
+ALLOWED_HOSTS = ['8000-l0rdgabbers-forgetmenot-taf2fti4rab.ws-eu106.gitpod.io']
 
 # Application definition
 
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'profiles',
+    'friends'
 ]
 
 MIDDLEWARE = [
