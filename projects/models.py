@@ -9,7 +9,7 @@ class Project(models.Model):
     title = models.CharField(max_length=255)
     summary = models.TextField()
     collaborators = models.ManyToManyField(User, related_name="projects_collaborated", blank=True)
-    complete = models.BooleanField(default=False)
+    complete = models.BooleanField(blank=True, null=False, default=False)
     image = models.ImageField(
         upload_to='images/', default='../rjstswgoqpakct7vhsy7', blank=True
     )

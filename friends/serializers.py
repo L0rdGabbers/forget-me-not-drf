@@ -2,13 +2,8 @@ from rest_framework import serializers
 from .models import FriendList, FriendRequest
 from django.contrib.auth.models import User
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username']  # Add more fields if needed
-
 class FriendListSerializer(serializers.ModelSerializer):
-    owner = UserSerializer()  # Use UserSerializer to serialize the owner field
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = FriendList
