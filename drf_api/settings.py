@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'profiles',
-    'friends'
+    'friends',
+    'projects'
 ]
 
 MIDDLEWARE = [

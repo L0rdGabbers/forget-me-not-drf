@@ -8,11 +8,16 @@
 
 ### Sprint 1 notes:
 For my first sprint of 3 days, I had decided on designing the wireframes for the frontend and model framework for the backend, since I also had a commitment to rehearsing a play.
-* 24/11/23 - 26/11/23
+#### 24/11/23 - 26/11/23
 * During this process I had decided to include a friend model, so that only friends would be able to colaborate with each other and so as to not be spammed by unknown users. I also included the Project and Task model so that bigger pieces of work could be made into smaller bite sizes. This made the app more of a team building web application rather than a reminding app, which felt much more applicable.
 
 ### Sprint 2 notes
 For my second sprint I had gotten started on creating the drf-api for my application.
-* 28/11/23
+#### 28/11/23
 * User stories template and issues were created for the backend repository.
 * Profiles app was created, committed and pushed to the repository.
+#### 30/11/23
+* Friends app was created, and the model format was changed. The friends app now contains two models, the FriendList model and the FriendRequest model.
+* Slight bug encountered: on the respond-to-friend-request-view, the PUT form and DELETE button appear even if a 404 error occurs. This needs to be addressed.
+#### 1/12/23
+* Project app was created
