@@ -53,3 +53,10 @@ class ProjectDetail(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk):
+        project = self.get_object(pk)
+        project.delete()
+        return Response(
+            status=status.HTTP_204_NO_CONTENT
+        )
