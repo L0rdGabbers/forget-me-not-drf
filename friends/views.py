@@ -6,9 +6,6 @@ from .serializers import FriendListSerializer, SendFriendRequestSerializer, Resp
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 
-
-from .serializers import FriendListSerializer
-
 class FriendListView(generics.RetrieveAPIView):
     """
     Retrieve the friend list for the authenticated user.
@@ -70,4 +67,6 @@ class FriendRequestListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return FriendRequest.objects.filter(receiver=self.request.user, is_active=True)
+        return FriendRequest.objects.filter(
+            Q(receiver=self.request.user, is_active=True) | Q(sender=self.request.user, is_active=True)
+        )

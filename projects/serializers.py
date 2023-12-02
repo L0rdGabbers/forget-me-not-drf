@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class ProjectListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
+    is_collaborator = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     complete = serializers.BooleanField(read_only=True)
@@ -28,15 +29,20 @@ class ProjectListSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user == obj.owner
 
+    def get_is_collaborator(self, obj):
+        request = self.context['request']
+        return request.user in obj.collaborators.all()
+
     class Meta:
         model = Project
         fields = [
-            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'image', 'created_at', 'updated_at', 'profile_image', 'is_owner'
+            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'image', 'created_at', 'updated_at', 'profile_image', 'is_owner', 'is_collaborator'
         ]
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
+    is_collaborator = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
 
@@ -59,10 +65,14 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user == obj.owner
 
+    def get_is_collaborator(self, obj):
+        request = self.context['request']
+        return request.user in obj.collaborators.all()
+
     class Meta:
         model = Project
         fields = [
-            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'image', 'created_at', 'updated_at', 'profile_image', 'is_owner'
+            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'image', 'created_at', 'updated_at', 'profile_image', 'is_owner', 'is_collaborator'
         ]
 
     

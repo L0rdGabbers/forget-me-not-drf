@@ -2,21 +2,22 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Project
+from django.db.models import Q
 from .serializers import ProjectListSerializer, ProjectDetailSerializer
-from drf_api.permissions import IsOwnerOrReadOnly
+from drf_api.permissions import IsOwnerOrReadOnly, IsOwnerOrCollaboratorOrReadOnly
 
 class ProjectList(APIView):
     """
-    Lists all projects.
+    Lists all projects that user owns or collaborates on, and allows user to post new projects.
     """
     serializer_class = ProjectListSerializer
     permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly
+        permissions.IsAuthenticated
     ]
 
 
     def get(self, request):
-        projects = Project.objects.all()
+        projects = Project.objects.filter(owner=request.user) | Project.objects.filter(collaborators=request.user)
         serializer = ProjectListSerializer(projects, many=True, context={'request': request})
         return Response(serializer.data)
 
