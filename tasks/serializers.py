@@ -1,18 +1,31 @@
 from rest_framework import serializers
 from .models import Task
 from django.contrib.auth.models import User
+from projects.models import Project
 
 class TaskListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
+    collaborators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
+    collaborator_usernames = serializers.SerializerMethodField()
     is_collaborator = serializers.SerializerMethodField()
+    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+    project_title = serializers.SerializerMethodField()
     complete = serializers.BooleanField(read_only=True)
-    file = serializers.FileField(write_only=True, allow_empty_file=True, use_url=False)
 
-    def validate_file(self, value):
-        max_size = 2 * 1024 * 1024
-        if value.size > max_size:
-            raise serializers.ValidationError('File size exceeds the limit of 2MB.')
+    def validate_image(self, value):
+        if value.size > 1024 * 1024 * 2:
+            raise serializers.ValidationError(
+                'Image size larger than 2MB!'
+            )
+        if value.image.width > 4096:
+            raise serializers.ValidationError(
+                'Image width larger than 4096px!'
+            )
+        if value.image.height > 4096:
+            raise serializers.ValidationError(
+                'Image height larger than 4096px!'
+            )
         return value
 
     def get_is_owner(self, obj):
@@ -23,14 +36,24 @@ class TaskListSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user in obj.collaborators.all()
 
+    def get_collaborator_usernames(self, obj):
+        collaborators = obj.collaborators.all()
+        collaborator_usernames = [collaborator.username for collaborator in collaborators]
+        return collaborator_usernames
+
+    def get_project_title(self, obj):
+        return obj.project.title
+
     class Meta:
         model = Task
         fields = [
-            'id', 'owner', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'file', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
+            'id', 'owner', 'project', 'project_title', 'title', 'summary', 'collaborators', 'collaborator_usernames',
+            'due_date', 'importance', 'complete', 'file', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
         ]
 
 class TaskDetailSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
     is_owner = serializers.SerializerMethodField()
     is_collaborator = serializers.SerializerMethodField()
     file = serializers.FileField(write_only=True, allow_empty_file=True, use_url=False)
@@ -52,5 +75,5 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = [
-            'id', 'owner', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'file', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
+            'id', 'owner', 'project', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'file', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
         ]

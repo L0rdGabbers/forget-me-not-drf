@@ -15,6 +15,14 @@ class FriendListSerializer(serializers.ModelSerializer):
         model = FriendList
         fields = ('owner', 'friend_usernames')
 
+class FriendDetailSerializer(serializers.ModelSerializer):
+    friend_ids = serializers.ListSerializer(source='collaborators', child=serializers.ReadOnlyField(source='id'))
+    friend_usernames = serializers.ListSerializer(source='collaborators', child=serializers.ReadOnlyField(source='username'))
+
+    class Meta:
+        model = FriendList
+        fields = ('friend_ids', 'friend_usernames',)
+
 class SendFriendRequestSerializer(serializers.ModelSerializer):
     sender = serializers.HiddenField(default=serializers.CurrentUserDefault())
     receiver = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)

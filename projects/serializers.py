@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class ProjectListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
+    collaborators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
     is_collaborator = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
@@ -42,6 +43,8 @@ class ProjectListSerializer(serializers.ModelSerializer):
 class ProjectDetailSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
+    collaborators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
+    collaborator_usernames = serializers.SerializerMethodField()
     is_collaborator = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
@@ -69,10 +72,15 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user in obj.collaborators.all()
 
+    def get_collaborator_usernames(self, obj):
+        collaborators = obj.collaborators.all()
+        collaborator_usernames = [collaborator.username for collaborator in collaborators]
+        return collaborator_usernames
+
     class Meta:
         model = Project
         fields = [
-            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'image', 'created_at', 'updated_at', 'profile_image', 'is_owner', 'is_collaborator'
+            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborators', 'collaborator_usernames', 'due_date', 'complete', 'image', 'profile_image', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
         ]
 
     

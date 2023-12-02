@@ -1,10 +1,12 @@
 from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import FriendList, FriendRequest
-from .serializers import FriendListSerializer, SendFriendRequestSerializer, RespondToFriendRequestSerializer
+from .serializers import FriendListSerializer, FriendDetailSerializer, SendFriendRequestSerializer, RespondToFriendRequestSerializer
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
+from drf_api.permissions import IsSenderOrReceiver
 
 class FriendListView(generics.RetrieveAPIView):
     """
@@ -17,8 +19,25 @@ class FriendListView(generics.RetrieveAPIView):
     def get_object(self):
         try:
             return FriendList.objects.get(owner=self.request.user)
+        except:
+            raise Http404
+
+class FriendDetailView(APIView):
+    serializer_class = FriendDetailSerializer
+    permission_classes = [IsSenderOrReceiver]
+
+    def get_object(self, pk):
+        try:
+            friend = FriendList.objects.get(pk=pk)
+            self.check_object_permissions(self.request, friend)
+            return friend
         except FriendList.DoesNotExist:
-            raise Http404("You do not have any friends yet. But don't worry, you just need to start making some requests!")
+            raise Http404
+
+    def get(self, request, pk):
+        friend = self.get_object(pk)
+        serializer = FriendDetailSerializer(project, context={'request': request})
+        return Response(serializer.data)
 
 class SendFriendRequestView(generics.CreateAPIView):
     """
@@ -32,11 +51,13 @@ class SendFriendRequestView(generics.CreateAPIView):
         sender = self.request.user
         serializer.save(sender=sender, receiver=receiver)
 
+
 class RespondToFriendRequestView(generics.RetrieveUpdateDestroyAPIView):
     """
     Accept, decline, or cancel a friend request.
     """
     serializer_class = RespondToFriendRequestSerializer
+    permission_classes = [IsSenderOrReceiver]
 
     queryset = FriendRequest.objects.all()  # Make sure to adjust the queryset as needed
 
