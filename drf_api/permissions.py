@@ -9,7 +9,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 class IsSenderOrReceiver(permissions.BasePermission):
   def has_object_permission(self, request, view, obj):
-    return obj.sender == request.user or obj.receiver == request.user
+    return request.user == obj.sender or request.user == obj.receiver
 
 class IsOwnerOrCollaborator(permissions.BasePermission):
   def has_object_permission(self, request, view, obj):

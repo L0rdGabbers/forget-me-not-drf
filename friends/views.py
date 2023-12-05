@@ -22,22 +22,22 @@ class FriendListView(generics.RetrieveAPIView):
         except:
             raise Http404
 
-class FriendDetailView(APIView):
+
+class FriendDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = FriendDetailSerializer
     permission_classes = [IsSenderOrReceiver]
 
-    def get_object(self, pk):
+    def get_object(self):
+        friend_request_id = self.kwargs['pk']
         try:
-            friend = FriendList.objects.get(pk=pk)
-            self.check_object_permissions(self.request, friend)
-            return friend
-        except FriendList.DoesNotExist:
-            raise Http404
+            friend_request = FriendRequest.objects.get(
+                Q(sender=self.request.user) | Q(receiver=self.request.user),
+                id=friend_request_id
+            )
+            return friend_request
+        except FriendRequest.DoesNotExist:
+            raise Http404("FriendRequest does not exist")
 
-    def get(self, request, pk):
-        friend = self.get_object(pk)
-        serializer = FriendDetailSerializer(project, context={'request': request})
-        return Response(serializer.data)
 
 class SendFriendRequestView(generics.CreateAPIView):
     """

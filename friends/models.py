@@ -82,3 +82,15 @@ class FriendRequest(models.Model):
         """
         self.is_active = False
         self.save()
+
+    def unfriend(self):
+        """
+        Unfriends the users involved in this friend request.
+        """
+        sender_list = FriendList.objects.get(owner=self.sender)
+        receiver_list = FriendList.objects.get(owner=self.receiver)
+
+        if sender_list and receiver_list:
+            sender_list.remove_friend(self.receiver)
+            receiver_list.remove_friend(self.sender)
+            self.delete()

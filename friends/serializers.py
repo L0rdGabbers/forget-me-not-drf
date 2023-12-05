@@ -1,27 +1,55 @@
 from rest_framework import serializers
 from .models import FriendList, FriendRequest
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 class FriendListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    friend_usernames = serializers.SerializerMethodField()
+    friend_details = serializers.SerializerMethodField()
 
-    def get_friend_usernames(self, obj):
+    def get_friend_details(self, obj):
         friends = obj.friends.all()
-        friend_usernames = [friend.username for friend in friends]
-        return friend_usernames
+        friend_details = {}
+
+        for friend in friends:
+            friend_request = FriendRequest.objects.filter(
+                (Q(sender=obj.owner, receiver=friend) | Q(sender=friend, receiver=obj.owner)),
+                is_active=False
+            ).first()
+
+            if friend_request:
+                friend_details[friend_request.id] = friend.username
+
+        return friend_details
 
     class Meta:
         model = FriendList
-        fields = ('owner', 'friend_usernames')
+        fields = ('owner', 'friend_details')
+
 
 class FriendDetailSerializer(serializers.ModelSerializer):
-    friend_ids = serializers.ListSerializer(source='collaborators', child=serializers.ReadOnlyField(source='id'))
-    friend_usernames = serializers.ListSerializer(source='collaborators', child=serializers.ReadOnlyField(source='username'))
+    friend_profile_id = serializers.SerializerMethodField()
+    friend_username = serializers.SerializerMethodField()
+    unfriend = serializers.BooleanField(write_only=True, required=False)
 
     class Meta:
-        model = FriendList
-        fields = ('friend_ids', 'friend_usernames',)
+        model = FriendRequest
+        fields = ('id', 'friend_profile_id', 'friend_username', 'unfriend')
+
+    def get_friend_profile_id(self, obj):
+        return obj.sender.id if obj.receiver == self.context['request'].user else obj.receiver.id
+
+    def get_friend_username(self, obj):
+        return obj.sender.username if obj.receiver == self.context['request'].user else obj.receiver.username
+
+    def update(self, instance, validated_data):
+        unfriend = validated_data.get('unfriend')
+        
+        if unfriend:
+            instance.unfriend()
+
+        return instance
+
 
 class SendFriendRequestSerializer(serializers.ModelSerializer):
     sender = serializers.HiddenField(default=serializers.CurrentUserDefault())
