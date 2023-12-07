@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework import status, permissions
+from rest_framework import status, generics, permissions, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Project
@@ -7,23 +7,23 @@ from django.db.models import Q
 from .serializers import ProjectListSerializer, ProjectDetailSerializer
 from drf_api.permissions import IsOwnerOrCollaboratorReadOnly, IsOwnerOrCollaborator
 
-class ProjectList(APIView):
+class ProjectList(generics.ListCreateAPIView):
     serializer_class = ProjectListSerializer
     permission_classes = [IsOwnerOrCollaborator, permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title',]
+    ordering_fields = ['owner', 'due_date', 'created_at']
+    ordering = ['-created_at']
 
-    def get(self, request):
-        projects = Project.objects.filter(Q(owner=request.user) | Q(collaborators=request.user)).distinct()
-        serializer = ProjectListSerializer(projects, many=True, context={'request': request})
-        return Response(serializer.data)
+    def get_queryset(self):
+        queryset = Project.objects.filter(
+            Q(owner=self.request.user) | Q(collaborators=self.request.user)
+        ).distinct()
 
-    def post(self, request):
-        serializer = ProjectListSerializer(
-            data=request.data, context={'request': request}
-        )
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return queryset
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
     
 class ProjectDetail(APIView):
     serializer_class = ProjectDetailSerializer

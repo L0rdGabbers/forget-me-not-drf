@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework import status, generics
+from rest_framework import status, generics, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Profile
@@ -12,6 +12,8 @@ class ProfileList(generics.ListAPIView):
     """
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    search_fields = ['owner__username',]
 
     
 class ProfileDetail(generics.RetrieveUpdateAPIView):

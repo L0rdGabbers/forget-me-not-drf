@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework import status, permissions
+from rest_framework import status, generics,  permissions, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Task
@@ -7,23 +7,23 @@ from .serializers import TaskListSerializer, TaskDetailSerializer
 from drf_api.permissions import IsOwnerOrCollaborator
 from django.db.models import Q
 
-class TaskList(APIView):
+class TaskList(generics.ListCreateAPIView):
     serializer_class = TaskListSerializer
     permission_classes = [IsOwnerOrCollaborator, permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title',]
+    ordering_fields = ['due_date', 'created_at']
+    ordering = ['-created_at']
 
-    def get(self, request):
-        tasks = Task.objects.filter(Q(owner=request.user) | Q(collaborators=request.user)).distinct()
-        serializer = TaskListSerializer(tasks, many=True, context={'request': request})
-        return Response(serializer.data)
+    def get_queryset(self):
+        queryset = Task.objects.filter(
+            Q(owner=self.request.user) | Q(collaborators=self.request.user)
+        ).distinct()
 
-    def post(self, request):
-        serializer = TaskListSerializer(
-            data=request.data, context={'request': request}
-        )
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return queryset
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 class TaskDetail(APIView):
     serializer_class = TaskDetailSerializer
