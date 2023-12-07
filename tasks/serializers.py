@@ -56,7 +56,6 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
     is_owner = serializers.SerializerMethodField()
     is_collaborator = serializers.SerializerMethodField()
-    file = serializers.FileField(write_only=True, allow_empty_file=True, use_url=False)
 
     def validate_file(self, value):
         max_size = 2 * 1024 * 1024
@@ -75,5 +74,5 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = [
-            'id', 'owner', 'project', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'file', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
+            'id', 'owner', 'project', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
         ]

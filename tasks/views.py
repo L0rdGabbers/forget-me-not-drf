@@ -9,7 +9,7 @@ from django.db.models import Q
 
 class TaskList(APIView):
     serializer_class = TaskListSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsOwnerOrCollaborator, permissions.IsAuthenticated]
 
     def get(self, request):
         tasks = Task.objects.filter(Q(owner=request.user) | Q(collaborators=request.user)).distinct()
@@ -27,7 +27,7 @@ class TaskList(APIView):
 
 class TaskDetail(APIView):
     serializer_class = TaskDetailSerializer
-    permission_classes = [IsOwnerOrCollaborator]
+    permission_classes = [IsOwnerOrCollaborator, permissions.IsAuthenticated]
 
     def get_object(self, pk):
         try:

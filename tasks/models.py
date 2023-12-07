@@ -22,7 +22,6 @@ class Task(models.Model):
         max_length=32, choices=importance_choices, default='low'
     )
     complete = models.BooleanField(blank=True, null=False, default=False)
-    file = models.FileField(upload_to='project_files/', blank=True, null=True)
 
     class Meta:
         ordering = ['-created_at']
