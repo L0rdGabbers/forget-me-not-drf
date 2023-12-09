@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import FriendList, FriendRequest
@@ -13,7 +13,7 @@ class FriendListView(generics.RetrieveAPIView):
     Retrieve the friend list for the authenticated user.
     """
     serializer_class = FriendListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
 
     def get_object(self):
@@ -57,7 +57,7 @@ class RespondToFriendRequestView(generics.RetrieveUpdateDestroyAPIView):
     Accept, decline, or cancel a friend request.
     """
     serializer_class = RespondToFriendRequestSerializer
-    permission_classes = [IsSenderOrReceiver]
+    permission_classes = [IsSenderOrReceiver, permissions.IsAuthenticated]
 
     queryset = FriendRequest.objects.all()  # Make sure to adjust the queryset as needed
 

@@ -1,3 +1,4 @@
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from rest_framework import serializers
 from .models import Task
 from django.contrib.auth.models import User
@@ -28,6 +29,12 @@ class TaskListSerializer(serializers.ModelSerializer):
 
     def get_project_title(self, obj):
         return obj.project.title
+
+    def get_created_at(self, obj):
+        return naturaltime(obj.created_at)
+
+    def get_updated_at(self, obj):
+        return naturaltime(obj.updated_at)
 
     class Meta:
         model = Task

@@ -1,3 +1,4 @@
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from rest_framework import serializers
 from .models import Project
 from django.contrib.auth.models import User
@@ -33,6 +34,12 @@ class ProjectListSerializer(serializers.ModelSerializer):
     def get_is_collaborator(self, obj):
         request = self.context['request']
         return request.user in obj.collaborators.all()
+
+    def get_created_at(self, obj):
+        return naturaltime(obj.created_at)
+
+    def get_updated_at(self, obj):
+        return naturaltime(obj.updated_at)
 
     class Meta:
         model = Project
