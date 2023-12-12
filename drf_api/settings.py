@@ -16,8 +16,6 @@ import dj_database_url
 import re
 if os.path.exists('env.py'): 
     import env
-import django_heroku
-django_heroku.settings(locals())
 
 CLOUDINARY_STORAGE = {
     'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
