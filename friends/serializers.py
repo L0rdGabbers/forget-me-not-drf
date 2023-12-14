@@ -53,7 +53,7 @@ class FriendDetailSerializer(serializers.ModelSerializer):
 
 
 class SendFriendRequestSerializer(serializers.ModelSerializer):
-    sender = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    sender = serializers.ReadOnlyField(default=serializers.CurrentUserDefault())
     receiver = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
     is_active = serializers.ReadOnlyField()
 
