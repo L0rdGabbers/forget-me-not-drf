@@ -4,7 +4,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import FriendList, FriendRequest
-from .serializers import FriendListSerializer, FriendDetailSerializer, SendFriendRequestSerializer, RespondToFriendRequestSerializer
+from .serializers import FriendListSerializer, FriendDetailSerializer, SendFriendRequestSerializer, RespondToFriendRequestSerializer, FriendRequestListSerializer
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from drf_api.permissions import IsSenderOrReceiver
@@ -85,7 +85,7 @@ class FriendRequestListView(generics.ListAPIView):
     """
     List friend requests for the authenticated user.
     """
-    serializer_class = SendFriendRequestSerializer
+    serializer_class = FriendRequestListSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):

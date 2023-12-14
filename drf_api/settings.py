@@ -61,7 +61,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEBUG' in os.environ
 
-ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST'), '8000-l0rdgabbers-forgetmenot-2wfwftfp0gn.ws-eu106.gitpod.io',]
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST'), '8000-l0rdgabbers-forgetmenot-2wfwftfp0gn.ws-eu107.gitpod.io',]
 
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [

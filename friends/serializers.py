@@ -53,7 +53,7 @@ class FriendDetailSerializer(serializers.ModelSerializer):
 
 
 class SendFriendRequestSerializer(serializers.ModelSerializer):
-    sender = serializers.ReadOnlyField(default=serializers.CurrentUserDefault())
+    sender = serializers.HiddenField(default=serializers.CurrentUserDefault())
     receiver = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
     is_active = serializers.ReadOnlyField()
 
@@ -74,6 +74,23 @@ class SendFriendRequestSerializer(serializers.ModelSerializer):
         sender = self.context['request'].user
         friend_request = FriendRequest.objects.create(sender=sender, receiver=receiver)
         return friend_request
+
+class FriendRequestListSerializer(serializers.ModelSerializer):
+    sender = serializers.PrimaryKeyRelatedField(default=None, read_only=True)
+    receiver = serializers.PrimaryKeyRelatedField(default=None, read_only=True)
+    sender_username = serializers.SerializerMethodField()
+    receiver_username = serializers.SerializerMethodField()
+
+    def get_sender_username(self, obj):
+        return obj.sender.username
+
+    def get_receiver_username(self, obj):
+        return obj.receiver.username
+
+    class Meta:
+        model = FriendRequest
+        fields = ('id', 'sender', 'receiver', 'sender_username', 'receiver_username', 'is_active', 'created_at',)
+
 
 class RespondToFriendRequestSerializer(serializers.ModelSerializer):
     cancel = serializers.BooleanField(write_only=True, required=False)
