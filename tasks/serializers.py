@@ -49,12 +49,6 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     is_collaborator = serializers.SerializerMethodField()
 
-    def validate_file(self, value):
-        max_size = 2 * 1024 * 1024
-        if value.size > max_size:
-            raise serializers.ValidationError('File size exceeds the limit of 2MB.')
-        return value
-
     def get_is_owner(self, obj):
         request = self.context['request']
         return request.user == obj.owner
