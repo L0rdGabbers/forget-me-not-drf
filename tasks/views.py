@@ -23,7 +23,10 @@ class TaskList(generics.ListCreateAPIView):
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        collaborators_str = self.request.data.get('collaborators', '')
+        collaborators = [int(pk) for pk in collaborators_str.split(',') if pk]
+
+        serializer.save(owner=self.request.user, collaborators=collaborators)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
