@@ -23,6 +23,9 @@ class ProjectList(generics.ListCreateAPIView):
 
         return queryset
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
     
