@@ -1,4 +1,4 @@
-from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.humanize.templatetags.humanize import naturaltime, naturalday
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from .models import Project
@@ -37,7 +37,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
         return request.user in obj.collaborators.all()
 
     def get_due_date(self, obj):
-        return naturaltime(obj,due_date)
+        return naturalday(obj.due_date)
 
     def get_created_at(self, obj):
         return naturaltime(obj.created_at)

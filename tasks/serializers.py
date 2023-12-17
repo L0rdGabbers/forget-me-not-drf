@@ -37,7 +37,7 @@ class TaskListSerializer(serializers.ModelSerializer):
         return naturaltime(obj.updated_at)
 
     def get_due_date(self, obj):
-        return naturaltime(obj,due_date)
+        return naturalday(obj.due_date)
 
     class Meta:
         model = Task
