@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class ProjectListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
-    collaborators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
+    collaborators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False, read_only=False)
     is_collaborator = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
@@ -35,6 +35,9 @@ class ProjectListSerializer(serializers.ModelSerializer):
     def get_is_collaborator(self, obj):
         request = self.context['request']
         return request.user in obj.collaborators.all()
+
+    def get_due_date(self, obj):
+        return naturaltime(obj,due_date)
 
     def get_created_at(self, obj):
         return naturaltime(obj.created_at)

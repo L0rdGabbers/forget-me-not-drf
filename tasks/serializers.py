@@ -36,6 +36,9 @@ class TaskListSerializer(serializers.ModelSerializer):
     def get_updated_at(self, obj):
         return naturaltime(obj.updated_at)
 
+    def get_due_date(self, obj):
+        return naturaltime(obj,due_date)
+
     class Meta:
         model = Task
         fields = [
