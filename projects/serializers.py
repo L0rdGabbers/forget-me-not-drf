@@ -36,9 +36,6 @@ class ProjectListSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user in obj.collaborators.all()
 
-    def get_due_date(self, obj):
-        return naturalday(obj.due_date)
-
     def get_created_at(self, obj):
         return naturaltime(obj.created_at)
 
