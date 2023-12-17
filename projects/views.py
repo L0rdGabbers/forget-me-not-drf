@@ -24,7 +24,13 @@ class ProjectList(generics.ListCreateAPIView):
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        collaborators_data = self.request.data.get('collaborators', [])
+        try:
+            collaborators = [int(collaborator_id) for collaborator_id in collaborators_data]
+        except ValueError:
+            return Response({"detail": "Invalid collaborator ID(s) provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer.save(owner=self.request.user, collaborators=collaborators)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
