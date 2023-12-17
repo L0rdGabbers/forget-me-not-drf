@@ -13,6 +13,7 @@ class TaskListSerializer(serializers.ModelSerializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
     project_title = serializers.SerializerMethodField()
     complete = serializers.BooleanField(read_only=True)
+    
 
     def get_is_owner(self, obj):
         request = self.context['request']
@@ -35,6 +36,11 @@ class TaskListSerializer(serializers.ModelSerializer):
 
     def get_updated_at(self, obj):
         return naturaltime(obj.updated_at)
+
+    def get_completed_tasks(self, obj):
+        completed_tasks = Task.objects.filter(project=obj, complete=True)
+        task_serializer = TaskSerializer(completed_tasks, many=True)
+        return task_serializer.data
 
     class Meta:
         model = Task
