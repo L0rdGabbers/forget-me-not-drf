@@ -19,9 +19,15 @@ class FriendListSerializer(serializers.ModelSerializer):
             ).first()
 
             if friend_request:
-                friend_details[friend_request.id] = friend.username
+                friend_details[friend_request.id] = {
+                    'username': friend.username,
+                    'profile_id': self.get_friend_profile_id(friend_request)
+                }
 
         return friend_details
+
+    def get_friend_profile_id(self, obj):
+        return obj.sender.id if obj.receiver == self.context['request'].user else obj.receiver.id
 
     class Meta:
         model = FriendList
