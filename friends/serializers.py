@@ -19,7 +19,7 @@ class FriendListSerializer(serializers.ModelSerializer):
             ).first()
 
             if friend_request:
-                friend_details.insert({
+                friend_details.append({
                     'username': friend.username,
                     'profile_id': self.get_friend_profile_id(friend_request),
                     'friend_id': friend_request.id,
