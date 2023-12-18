@@ -10,7 +10,7 @@ class FriendListSerializer(serializers.ModelSerializer):
 
     def get_friend_details(self, obj):
         friends = obj.friends.all()
-        friend_details = {}
+        friend_details = []
 
         for friend in friends:
             friend_request = FriendRequest.objects.filter(
@@ -19,11 +19,11 @@ class FriendListSerializer(serializers.ModelSerializer):
             ).first()
 
             if friend_request:
-                friend_details[friend_request.id] = {
+                friend_details.insert({
                     'username': friend.username,
                     'profile_id': self.get_friend_profile_id(friend_request),
                     'friend_id': friend_request.id,
-                }
+                })
 
         return friend_details
 
