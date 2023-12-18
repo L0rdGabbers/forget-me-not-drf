@@ -21,7 +21,8 @@ class FriendListSerializer(serializers.ModelSerializer):
             if friend_request:
                 friend_details[friend_request.id] = {
                     'username': friend.username,
-                    'profile_id': self.get_friend_profile_id(friend_request)
+                    'profile_id': self.get_friend_profile_id(friend_request),
+                    'friend_id': friend_request.id,
                 }
 
         return friend_details
