@@ -47,6 +47,8 @@ class TaskDetail(APIView):
 
     def put(self, request, pk):
         task = self.get_object(pk)
+        if request.user != task.owner and request.user not in task.collaborators.all():
+            return Response({"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
         serializer = TaskDetailSerializer(task, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -55,6 +57,8 @@ class TaskDetail(APIView):
 
     def delete(self, request, pk):
         task = self.get_object(pk)
+        if request.user != task.owner:
+            return Response({"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
         task.delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT

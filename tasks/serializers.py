@@ -42,6 +42,12 @@ class TaskListSerializer(serializers.ModelSerializer):
         task_serializer = TaskSerializer(completed_tasks, many=True)
         return task_serializer.data
 
+    def validate_project(self, value):
+        request = self.context['request']
+        if value.owner != request.user:
+            raise serializers.ValidationError("You can only set the project to one where you are the owner.")
+        return value
+
     class Meta:
         model = Task
         fields = [

@@ -48,6 +48,9 @@ class ProjectDetail(APIView):
 
     def put(self, request, pk):
         project = self.get_object(pk)
+        if request.user != project.owner:
+            return Response({"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = ProjectDetailSerializer(project, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -56,6 +59,8 @@ class ProjectDetail(APIView):
 
     def delete(self, request, pk):
         project = self.get_object(pk)
+        if request.user != project.owner:
+            return Response({"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
         project.delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT
