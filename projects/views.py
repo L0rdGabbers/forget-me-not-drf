@@ -31,7 +31,7 @@ class ProjectList(generics.ListCreateAPIView):
     
 class ProjectDetail(APIView):
     serializer_class = ProjectDetailSerializer
-    permission_classes = [IsOwnerOrCollaboratorReadOnly]
+    permission_classes = [IsOwnerOrCollaborator]
     
     def get_object(self, pk):
         try:
@@ -47,21 +47,28 @@ class ProjectDetail(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk):
-        project = self.get_object(pk)
-        if request.user != project.owner:
-            return Response({"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            project = self.get_object(pk)
+            if request.user != project.owner:
+                return Response({"detail": "You do not have permission to edit this project."}, status=status.HTTP_403_FORBIDDEN)
 
-        serializer = ProjectDetailSerializer(project, data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+            serializer = ProjectDetailSerializer(project, data=request.data, context={'request': request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Http404:
+            return Response({"detail": "Project not found."}, status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, pk):
-        project = self.get_object(pk)
-        if request.user != project.owner:
-            return Response({"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
-        project.delete()
-        return Response(
-            status=status.HTTP_204_NO_CONTENT
-        )
+        try:
+            project = self.get_object(pk)
+            if request.user != project.owner:
+                return Response({"detail": "You do not have permission to delete this project."}, status=status.HTTP_403_FORBIDDEN)
+
+            project.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except Http404:
+            return Response({"detail": "Project not found."}, status=status.HTTP_404_NOT_FOUND)
