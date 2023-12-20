@@ -59,6 +59,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
     is_owner = serializers.SerializerMethodField()
+    profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     is_collaborator = serializers.SerializerMethodField()
     collaborator_usernames = serializers.SerializerMethodField()
 
@@ -78,5 +79,5 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = [
-            'id', 'owner', 'project', 'title', 'summary', 'collaborators', 'collaborator_usernames', 'due_date', 'complete', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
+            'id', 'owner', 'profile_id', 'project', 'title', 'summary', 'collaborators', 'collaborator_usernames', 'due_date', 'complete', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
         ]
