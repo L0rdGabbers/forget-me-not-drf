@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from .models import Project
 from django.db.models import Q
 from .serializers import ProjectListSerializer, ProjectDetailSerializer
-from drf_api.permissions import IsOwnerOrCollaboratorReadOnly, IsOwnerOrCollaborator, IsOwnerOnly
+from drf_api.permissions import IsOwnerOrCollaboratorReadOnly, IsOwnerOrCollaborator
 
 class ProjectList(generics.ListCreateAPIView):
     serializer_class = ProjectListSerializer
@@ -31,7 +31,7 @@ class ProjectList(generics.ListCreateAPIView):
     
 class ProjectDetail(APIView):
     serializer_class = ProjectDetailSerializer
-    permission_classes = [IsOwnerOnly]
+    permission_classes = [IsOwnerOrCollaboratorReadOnly]
     
     def get_object(self, pk):
         try:
