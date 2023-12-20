@@ -20,19 +20,9 @@ class IsOwnerOrCollaborator(permissions.BasePermission):
   def has_object_permission(self, request, view, obj):
     if request.user == obj.owner:
       return True
-    elif request.user in obj.collaborators.all() and request.method != 'DELETE':
+    elif request.user in obj.collaborators.all():
       return True
     return False
-
-
-class IsOwnerOrCollaboratorReadOnly(permissions.BasePermission):
-  def has_object_permission(self, request, view, obj):
-    if request.user == obj.owner:
-      return True
-    if request.method in permissions.SAFE_METHODS and request.user in obj.collaborators.all():
-      return True
-    return False
-
 
 class SentFriendRequest(permissions.BasePermission):
   def has_object_permission(self, request, view, obj):

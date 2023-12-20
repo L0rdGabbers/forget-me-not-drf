@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from .models import Project
 from django.db.models import Q
 from .serializers import ProjectListSerializer, ProjectDetailSerializer
-from drf_api.permissions import IsOwnerOrCollaboratorReadOnly, IsOwnerOrCollaborator
+from drf_api.permissions import IsOwnerOrCollaborator
 
 class ProjectList(generics.ListCreateAPIView):
     serializer_class = ProjectListSerializer
