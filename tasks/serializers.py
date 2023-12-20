@@ -60,6 +60,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
     is_owner = serializers.SerializerMethodField()
     is_collaborator = serializers.SerializerMethodField()
+    collaborator_usernames = serializers.SerializerMethodField()
 
     def get_is_owner(self, obj):
         request = self.context['request']
@@ -69,8 +70,13 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user in obj.collaborators.all()
 
+    def get_collaborator_usernames(self, obj):
+        collaborators = obj.collaborators.all()
+        collaborator_usernames = [collaborator.username for collaborator in collaborators]
+        return collaborator_usernames
+
     class Meta:
         model = Task
         fields = [
-            'id', 'owner', 'project', 'title', 'summary', 'collaborators', 'due_date', 'complete', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
+            'id', 'owner', 'project', 'title', 'summary', 'collaborators', 'collaborator_usernames', 'due_date', 'complete', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
         ]
