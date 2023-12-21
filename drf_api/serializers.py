@@ -9,9 +9,9 @@ class CurrentUserSerializer(UserDetailsSerializer):
 
     def get_is_owner(self, obj):
         request = self.context['request']
-        return request.user == obj.owner
+        return request.user == obj.profile.owner
 
     class Meta(UserDetailsSerializer.Meta):
         fields = UserDetailsSerializer.Meta.fields + (
-            'profile_id', 'profile_image', 'is_owner',
+            'profile_id', 'profile_image', 'is_owner'
         )
