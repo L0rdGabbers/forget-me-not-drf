@@ -12,6 +12,7 @@ class Profile(models.Model):
     image = models.ImageField(
         upload_to='images/', default='../i5d3k6odv5vkthh2yjul'
     )
+    bio = models.TextField(blank=True, default='')
 
     class Meta:
         ordering = ['-created_at']
