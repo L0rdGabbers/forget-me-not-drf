@@ -7,6 +7,7 @@ from projects.models import Project
 class TaskListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
+    collaborators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False, read_only=False)
     collaborator_details = serializers.SerializerMethodField()
     is_collaborator = serializers.SerializerMethodField()
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
@@ -58,6 +59,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
+    collaborators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False, read_only=False)
     is_collaborator = serializers.SerializerMethodField()
     collaborator_details = serializers.SerializerMethodField()
 

@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 class ProjectListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
+    collaborators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False, read_only=False)
     collaborator_details = serializers.SerializerMethodField()
     is_collaborator = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
@@ -66,6 +67,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
 class ProjectDetailSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
+    collaborators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False, read_only=False)
     collaborator_details = serializers.SerializerMethodField()
     is_collaborator = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
