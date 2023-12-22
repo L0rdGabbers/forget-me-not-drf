@@ -38,7 +38,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
 
     def get_collaborator_details(self, obj):
         collaborators = obj.collaborators.all()
-        return [{'collaborator_id': collaborator.id, 'collaborator_username': collaborator.username} for collaborator in collaborators]
+        return [{'id': collaborator.id, 'collaborator_username': collaborator.username} for collaborator in collaborators]
 
     def get_is_collaborator(self, obj):
         request = self.context['request']
@@ -96,7 +96,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
 
     def get_collaborator_details(self, obj):
         collaborators = obj.collaborators.all()
-        return [{'collaborator_id': collaborator.id, 'collaborator_username': collaborator.username} for collaborator in collaborators]
+        return [{'id': collaborator.id, 'collaborator_username': collaborator.username} for collaborator in collaborators]
 
     def get_is_collaborator(self, obj):
         request = self.context['request']

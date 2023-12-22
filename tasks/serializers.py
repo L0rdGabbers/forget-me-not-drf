@@ -25,7 +25,7 @@ class TaskListSerializer(serializers.ModelSerializer):
 
     def get_collaborator_details(self, obj):
         collaborators = obj.collaborators.all()
-        return [{'collaborator_id': collaborator.id, 'collaborator_username': collaborator.username} for collaborator in collaborators]
+        return [{'id': collaborator.id, 'collaborator_username': collaborator.username} for collaborator in collaborators]
 
     def get_project_title(self, obj):
         return obj.project.title
@@ -73,7 +73,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
     def get_collaborator_details(self, obj):
         collaborators = obj.collaborators.all()
-        return [{'collaborator_id': collaborator.id, 'collaborator_username': collaborator.username} for collaborator in collaborators]
+        return [{'id': collaborator.id, 'collaborator_username': collaborator.username} for collaborator in collaborators]
 
     class Meta:
         model = Task

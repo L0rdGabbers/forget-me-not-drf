@@ -21,8 +21,8 @@ class FriendListSerializer(serializers.ModelSerializer):
             if friend_request:
                 friend_details.append({
                     'username': friend.username,
-                    'profile_id': self.get_friend_profile_id(friend_request),
-                    'id': friend_request.id,
+                    'id': self.get_friend_profile_id(friend_request),
+                    'friend_id': friend_request.id,
                     'friend_image': friend.profile.image.url,
                 })
 
