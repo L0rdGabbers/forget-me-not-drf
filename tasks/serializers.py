@@ -50,7 +50,7 @@ class TaskListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = [
-            'id', 'owner', 'project', 'project_title', 'title', 'summary', 'collaborator_details',
+            'id', 'owner', 'project', 'project_title', 'title', 'summary', 'collaborators', 'collaborator_details',
             'due_date', 'importance', 'complete', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
         ]
 
@@ -78,5 +78,5 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = [
-            'id', 'owner', 'profile_id', 'project', 'title', 'summary', 'collaborator_details', 'due_date', 'importance', 'complete', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
+            'id', 'owner', 'profile_id', 'project', 'title', 'summary', 'collaborators', 'collaborator_details', 'due_date', 'importance', 'complete', 'created_at', 'updated_at', 'is_owner', 'is_collaborator'
         ]

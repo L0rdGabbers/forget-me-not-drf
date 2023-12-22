@@ -59,7 +59,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = [
-            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborator_details', 'due_date', 'complete', 'image',
+            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborators', 'collaborator_details', 'due_date', 'complete', 'image',
             'created_at', 'updated_at', 'profile_image', 'is_owner', 'is_collaborator',
             'completed_task_count', 'uncompleted_task_count'
         ]
@@ -115,7 +115,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = [
-            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborator_details',
+            'id', 'owner', 'profile_id', 'title', 'summary', 'collaborators', 'collaborator_details',
             'due_date', 'complete', 'image', 'profile_image', 'created_at', 'updated_at',
             'is_owner', 'is_collaborator', 'completed_tasks', 'uncompleted_tasks'
         ]
