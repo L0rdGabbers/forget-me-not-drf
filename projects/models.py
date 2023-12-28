@@ -5,7 +5,7 @@ class Project(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    due_date = models.DateField(null=True, blank=True)
+    due_date = models.DateField(blank=True)
     title = models.CharField(max_length=255)
     summary = models.TextField()
     collaborators = models.ManyToManyField(User, related_name="projects_collaborated", blank=True)
