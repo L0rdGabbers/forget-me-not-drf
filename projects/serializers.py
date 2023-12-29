@@ -102,14 +102,15 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user in obj.collaborators.all()    
 
-    def get_completed_tasks(self, obj, user):
+    def get_completed_tasks(self, obj):
+        request = self.context['request']
         tasks = Task.objects.filter(project=obj, complete=True)
 
         task_data = []
 
         for task in tasks:
-            is_owner = task.owner == user
-            is_collaborator = user in task.collaborators.all()
+            is_owner = task.owner == request.user
+            is_collaborator = request.user in task.collaborators.all()
 
             task_data.append({
                 'id': task.id,
@@ -120,13 +121,14 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
         return task_data
 
     def get_uncompleted_tasks(self, obj, user):
+        request = self.context['request']
         tasks = Task.objects.filter(project=obj, complete=False)
 
         task_data = []
 
         for task in tasks:
-            is_owner = task.owner == user
-            is_collaborator = user in task.collaborators.all()
+            is_owner = task.owner == request.user
+            is_collaborator = request.user in task.collaborators.all()
 
             task_data.append({
                 'id': task.id,
