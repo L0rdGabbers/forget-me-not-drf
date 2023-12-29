@@ -120,7 +120,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
             })
         return task_data
 
-    def get_uncompleted_tasks(self, obj, user):
+    def get_uncompleted_tasks(self, obj):
         request = self.context['request']
         tasks = Task.objects.filter(project=obj, complete=False)
 
