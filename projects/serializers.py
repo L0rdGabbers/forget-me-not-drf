@@ -102,15 +102,39 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user in obj.collaborators.all()    
 
-    def get_completed_tasks(self, obj):
+    def get_completed_tasks(self, obj, user):
         tasks = Task.objects.filter(project=obj, complete=True)
-        task_data = [{'id': task.id, 'name': task.title, 'is_owner': task.is_owner, 'is_collaborator': task.is_collaborator} for task in tasks]
-        return task_data
 
-    def get_uncompleted_tasks(self, obj):
+        task_data = []
+
+        for task in tasks:
+            is_owner = task.owner == user
+            is_collaborator = user in task.collaborators.all()
+
+            task_data.append({
+                'id': task.id,
+                'name': task.title,
+                'is_owner': is_owner,
+                'is_collaborator': is_collaborator,
+            })
+
+    def get_uncompleted_tasks(self, obj, user):
         tasks = Task.objects.filter(project=obj, complete=False)
-        task_data = [{'id': task.id, 'name': task.title, 'is_owner': task.is_owner, 'is_collaborator': task.is_collaborator} for task in tasks]
-        return task_data
+
+        task_data = []
+
+        for task in tasks:
+            is_owner = task.owner == user
+            is_collaborator = user in task.collaborators.all()
+
+            task_data.append({
+                'id': task.id,
+                'name': task.title,
+                'is_owner': is_owner,
+                'is_collaborator': is_collaborator,
+            })
+
+    return task_data
 
     class Meta:
         model = Project
