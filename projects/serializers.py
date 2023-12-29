@@ -109,7 +109,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
 
     def get_uncompleted_tasks(self, obj):
         tasks = Task.objects.filter(project=obj, complete=False)
-        task_data = [{'id': task.id, 'name': task.title} for task in tasks]
+        task_data = [{'id': task.id, 'name': task.title, 'is_owner': task.is_owner, 'is_collaborator': task.is_collaborator} for task in tasks]
         return task_data
 
     class Meta:
