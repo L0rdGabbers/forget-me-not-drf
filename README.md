@@ -146,9 +146,6 @@ Added a new field, Bio, to the Profile model, to allow a user to write something
 
 # Serialized Data 
 
-## Note
-In order to make the serialized views a bit more visually appealing, I have opted to use the Debug mode = True to display the data in a bit more clear fashion.
-
 ## Profiles
 
 ### List
@@ -198,6 +195,10 @@ If successful, it will return a 201 created response.
 However, if the receiver has already received an active friend request from the user, sent the user an active friend request, or is in the user's friend list, it will return an error.
 
 ![Friend Request Not Allowed](/assets/already-sent-friend-request.png)
+
+Additionally, if the user is trying to be clever and sends a friend request to themself, it will also throw an error.
+
+![Friend Request to Self](/assets/request-to-self-drf.png)
 
 ### Friend Requests List
 
@@ -254,3 +255,98 @@ Unlike the projects page, collaborators are permitted to make PUT requests to an
 ![Tasks Detail Page](/assets/task-detail-drf-collaborator.png)
 
 # Verification
+
+## My Code
+
+All Python fields that I wrote have been passed through the CI Python Linter and have returned with no errors.
+
+![CI Python Linter](/assets/python-verified.png)
+
+That being said, the settings.py file has some lines that are too long to fit in, but otherwise it return with no errors.
+
+![Settings.py Linter](/assets/settings-verify.png)
+
+# Manual Testing 
+
+Below is a summary of how I manually tested each page
+
+| Checked | **Can a user view and edit their profile?** |
+|:-------:|:--------|
+| &check; | Users can make get and put requests on their profile |
+
+| Checked | **Can a user view another user's profile and are they restricted from editing it?** |
+|:-------:|:--------|
+| &check; | Any user can view any profile, but can only edit their own profile |
+
+| Checked | **Can a user view their own friends list?** |
+|:-------:|:--------|
+| &check; | A user can view their confirmed friends by viewing the friend list page |
+
+| Checked | **Can a user remove someone from their friend list?** |
+|:-------:|:--------|
+| &check; | A user can make use the DELETE method to remove a friend from both, their own and the friend's friend lists. |
+
+| Checked | **Can a user send a friend request.** |
+|:-------:|:--------|
+| &check; | A user can send a request to any user, provided they are not themself, someone who already has a request from or to them already, or someone on their friends list |
+
+| Checked | **Can a user accept or decline a friend request?** |
+|:-------:|:--------|
+| &check; | If the user is the recipient of a friend request, they can accept or decline the friend request. Accepting will add both users to each other's friend list |
+
+| Checked | **Can a user cancel a friend request that they have sent?** |
+|:-------:|:--------|
+| &check; | If the user has sent a friend request, they can cancel it in the friend request details view |
+
+| Checked | **Can a user view a list of projects that they own or are collaborators of?** |
+|:-------:|:--------|
+| &check; | If a user is a project owner or project collaborator, the project will appear in their projects list |
+
+| Checked | **Can a user view, edit and delete a project that they own?** |
+|:-------:|:--------|
+| &check; | If a user is a project's owner, then they have permission to view, edit and delete a project |
+
+| Checked | **Can a user view a project that they are a collaborator of, but not edit or delete it?** |
+|:-------:|:--------|
+| &check; | If a user is a project collaborator, then they have permission to view the project, but cannot edit or delete it. |
+
+| Checked | **Can a user view a list of tasks that they own or are collaborators of?** |
+|:-------:|:--------|
+| &check; | If a user is a task owner or task collaborator, the task will appear in their projects list |
+
+| Checked | **Can a user view, edit and delete a task that they own or are a collaborator of?** |
+|:-------:|:--------|
+| &check; | If a user is a tasks's owner or collaborator, then they have permission to view, edit and delete a task |
+
+# **Deployment**
+
+The Back End Django Rest Framework API website was successfully deployed to the Heroku website.
+
+It contains Eight Config Vars which I will not share on this readme file for security reasons.
+The function of these Config Vars ensure the security of the API and links the API to the Front End React Page using CLIENT_ORIGIN and CLIENT_ORIGIN_DEV.
+
+The deployed API site can be found here at https://forget-me-not-api-2b7c6aaeb81b.herokuapp.com/
+
+## **Front End Link**
+
+The Front End React Website was also successfully deployed to the Heroku website.
+The link to the React repository can be found [here](https://github.com/L0rdGabbers/forget-me-not-react).
+
+The Front End Heroku site can be found [here](https://forget-me-not-react-165c57a94df3.herokuapp.com/).
+
+# **Technologies Used**
+- Python
+- ElephantSQL - Database Storage
+- Cloudinary - Image Storage
+- Heroku - Finished API deployed to Heroku
+
+# **Credit**
+- The site was developed using Gitpod.
+- Stack Overflow
+- Code Institute Learning Platform
+- Slack Chats
+- Code Institute Tutor Assistance 
+
+# **Honourable Mentions**
+- Richard Wells: Thank you for all your help this year. It's been great fun.
+- Thank you to Boswell's Cafe for providing me with a job with such flexible hours so that I was able to commit to this course.
