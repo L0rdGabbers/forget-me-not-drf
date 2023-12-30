@@ -3,8 +3,10 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+
 class FriendList(models.Model):
-    owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name="friend_list_owner")
+    owner = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="friend_list_owner")
     friends = models.ManyToManyField(User, blank=True, related_name="friends")
 
     def __str__(self):
@@ -14,7 +16,7 @@ class FriendList(models.Model):
         """
         Adds a new friend.
         """
-        if not account in self.friends.all():
+        if account not in self.friends.all():
             self.friends.add(account)
 
     def remove_friend(self, account):
@@ -26,7 +28,7 @@ class FriendList(models.Model):
 
     def unfriend(self, removee):
         """
-        Unfriends another user
+        Unfriends another user.
         """
         remover_friends_list = self
         remover_friends_list.remove_friend(removee)
@@ -41,12 +43,15 @@ class FriendList(models.Model):
             return True
         return False
 
+
 class FriendRequest(models.Model):
     """
-    Allows a sender to send a friend request to a reciever.
+    Allows a sender to send a friend request to a receiver.
     """
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sender")
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
+    sender = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="sender")
+    receiver = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="receiver")
     is_active = models.BooleanField(blank=True, null=False, default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -56,7 +61,7 @@ class FriendRequest(models.Model):
     def accept(self):
         """
         Accept a friend request
-        Updates both Sender and Receiver friend list
+        Updates both Sender and Receiver friend lists
         """
         receiver_friend_list = FriendList.objects.get(owner=self.receiver)
         if receiver_friend_list:

@@ -2,6 +2,7 @@ from django.urls import path
 from .views import FriendListView, FriendDetailView, SendFriendRequestView, RespondToFriendRequestView, FriendRequestListView
 
 urlpatterns = [
+    # URL patterns for friend views
     path('friends/', FriendListView.as_view(), name='friend-list'),
     path('friends/<int:pk>/', FriendDetailView.as_view(), name='friend-list'),
     path('send-friend-request/', SendFriendRequestView.as_view(), name='send-friend-request'),
